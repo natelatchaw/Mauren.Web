@@ -29,7 +29,7 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddDiscordInfrastructureServices(this IServiceCollection services, IConfigurationManager configuration)
         {
             // Add the options provider service and add bot options
-            services.AddOptionsProvider<BotOptions>(configuration, "data.json");
+            services.AddOptionsProvider<BotOptions>(configuration, "Content/data.json");
             // Add the bot worker
             services.AddBotWorker();
             // Add the plugin worker
