@@ -1,7 +1,6 @@
 <Solution>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
-    <File Path=".github/workflows/docker-image.yml" />
     <File Path="entrypoint.sh" />
     <File Path="NuGet.Config" />
   </Folder>
