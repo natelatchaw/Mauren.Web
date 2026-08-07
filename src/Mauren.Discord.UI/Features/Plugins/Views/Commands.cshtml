@@ -1,0 +1,138 @@
+@using Mauren.Discord.Application.Features.Plugins
+@using Mauren.Discord.UI
+@using Mauren.Discord.UI.Features
+@model Mauren.Discord.UI.Features.Plugins.Models.CommandsViewModel
+
+@{
+    this.SetNavigationLink(Manifest.Plugins.Commands, out NavigationLink link);
+}
+
+@* Page Info *@
+<vc:title-card title="@link.Label" subtitle="View commands loaded from plugin modules"></vc:title-card>
+
+@* Spacer *@
+<div class="mt-3"></div>
+
+@* Success Notification *@
+@if (TempData["SuccessMessage"] is String successMessage)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+
+        @successMessage
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+
+    </div>
+}
+
+@* Success Notification *@
+@if (TempData["ErrorMessage"] is String errorMessage)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+
+        @errorMessage
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+
+    </div>
+}
+
+@* Page Card *@
+<card>
+
+    @* Page Card: Header *@
+    <card-header>
+
+        <div class="hstack justify-content-between">
+
+            <h5 class="card-title m-0">Loaded Commands</h5>
+
+            @* Sync Commands Button *@
+            <form class="m-0" asp-controller="Plugins" asp-action="SyncCommands" method="post">
+
+                <div class="input-group input-group-sm">
+
+                    <span class="input-group-text">Guild</span>
+
+                    <select name="guildId" class="form-select form-select-sm w-auto">
+
+                        <option value="">Global Sync</option>
+
+                        @foreach (GuildMetadataViewModel guild in Model.Guilds ?? [])
+                        {
+                            <option value="@guild.Id">@guild.Name</option>
+                        }
+
+                    </select>
+
+                    <button class="btn btn-outline-primary btn-sm" type="submit" title="Sync slash commands to Discord">Sync</button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </card-header>
+
+    @* Page Card: Body *@
+    <card-body>
+
+        @* Commands Table *@
+        <table class="table table-hover">
+            
+            @* Commands Table: Header *@
+            @if (true)
+            {
+                <thead>
+
+                    <tr>
+
+                        <th scope="col">Name</th>
+
+                        <th scope="col">Module</th>
+
+                        <th scope="col">Version</th>
+
+                        <th scope="col">Actions</th>
+
+                    </tr>
+
+                </thead>
+            }
+
+            @* Commands Table: Row *@
+            @foreach (Object command in new List<Object> { new Object() })
+            {
+                <tbody>
+
+                    <tr>
+
+                        <th scope="auto">Some Value</th>
+
+                        <th scope="auto">Module_Name</th>
+
+                        <th scope="auto">420.69.1</th>
+
+                        <th scope="auto">
+
+                            <form method="post">
+
+                                <button class="btn btn-sm btn-danger">Delete</button>
+
+                            </form>
+
+                        </th>
+
+                    </tr>
+
+                </tbody>
+            }
+
+
+
+        </table>
+
+    </card-body>
+
+</card>

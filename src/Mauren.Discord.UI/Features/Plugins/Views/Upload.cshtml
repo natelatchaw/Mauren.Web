@@ -1,0 +1,76 @@
+@using Mauren.Discord.UI
+@using Mauren.Discord.UI.Features
+@model Mauren.Discord.UI.Features.Plugins.Models.UploadViewModel
+
+@{
+    this.SetNavigationLink(Manifest.Plugins.Upload, out NavigationLink link);
+}
+
+
+@* Page Info *@
+<vc:title-card title="@link.Label" subtitle="Upload a Plugin Archive (.zip) to be loaded by the system"></vc:title-card>
+
+@* Spacer *@
+<div class="mt-3"></div>
+
+@* Success Notification *@
+@if (TempData["SuccessMessage"] is String successMessage)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+
+        @successMessage
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+
+    </div>
+}
+
+@* Success Notification *@
+@if (TempData["ErrorMessage"] is String errorMessage)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+
+        @errorMessage
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="close"></button>
+
+    </div>
+}
+
+@* Page Card *@
+<card>
+
+    @* Page Card: Header *@
+    <card-header>
+
+        <div class="hstack justify-content-between">
+
+            <h5 class="card-title m-0">Plugin Archive</h5>
+
+        </div>
+
+    </card-header>
+
+    @* Page Card: Body *@
+    <card-body>
+
+        @* File Upload Form *@
+        <form asp-controller="Plugins" asp-action="Upload" method="post" enctype="multipart/form-data">
+        
+            @* File Upload *@
+            <div class="input-group">
+
+                <input class="form-control" type="file" asp-for="File" accept="application/zip" />
+
+                <button class="btn btn-primary" type="submit">Upload</button>
+
+            </div>
+
+            @* Form Validation *@
+            <span class="text-danger" asp-validation-for="File"></span>
+            
+        </form>
+
+    </card-body>
+
+</card>

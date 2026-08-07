@@ -1,0 +1,25 @@
+@model Mauren.Discord.UI.Features.Shared.Views.Components.TitleCard.Data
+
+@* Accessibility Title *@
+<h1 class="visually-hidden-focusable">@Model.Title</h1>
+
+@* Title Card *@
+<div class="p-3 bg-body border">
+
+    @* If the title value is not null/whitespace *@
+    @if (String.IsNullOrWhiteSpace(Model.Title) is false)
+    {
+        @* Title *@
+        <h2 class="p-0 m-0 align-baseline">@Model.Title</h2>
+    }
+
+    @* If the subtitle value is not null/whitespace *@
+    @if (String.IsNullOrWhiteSpace(Model.Subtitle) is false)
+    {
+        @* Subtitle *@
+        <h5 class="p-0 m-0 align-baseline text-muted">@Model.Subtitle</h5>
+    }
+
+</div>
+
+

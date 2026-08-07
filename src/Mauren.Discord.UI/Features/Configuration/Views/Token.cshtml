@@ -1,0 +1,84 @@
+@using Mauren.Discord.UI
+@using Mauren.Discord.UI.Features
+@using Mauren.Discord.UI.Features.Configuration
+@model Mauren.Discord.UI.Features.Configuration.Models.TokenViewModel
+
+@{
+    this.SetNavigationLink(Manifest.Configuration.Token, out NavigationLink link);
+}
+
+@if (TempData["Success"] is String success)
+{
+    <div class="alert alert-success">@success</div>
+}
+
+@* Page Info *@
+<vc:title-card title="@link.Label" subtitle="Change Bot Token"></vc:title-card>
+
+@* Spacer *@
+<div class="mt-2"></div>
+
+@* Page Card *@
+<card>
+
+    @* Page Card: Header *@
+    <card-header>
+
+        <div class="hstack justify-content-between">
+
+            <h5 class="card-title m-0">@link.Label</h5>
+
+        </div>
+
+    </card-header>
+
+    @* Update Token Form *@
+    <form asp-controller="@nameof(ConfigurationController)" asp-action="@nameof(ConfigurationController.Token)" method="post">
+
+        @* Page Card: Body *@
+        <card-body>
+
+            <fieldset class="vstack gap-2">
+
+                <div class="input-group">
+
+                    <div class="form-floating">
+
+                        <input class="form-control" type="password" asp-for="@Model.CurrentToken" value="@Model.CurrentToken" readonly />
+
+                        <label asp-for="@Model.CurrentToken"></label>
+
+                    </div>
+
+                    <span class="input-group-text d-none d-md-flex" title="Last Updated">@(Model.LastUpdated?.ToLocalTime().ToString() ?? "Never Updated")</span>
+
+                </div>
+
+                <div>
+
+                    <div class="form-floating">
+
+                        <input class="form-control" type="password" asp-for="@Model.NewToken" />
+
+                        <label asp-for="@Model.NewToken"></label>
+
+                    </div>
+
+                    <span class="text-danger" asp-validation-for="@Model.NewToken"></span>
+
+                </div>
+
+            </fieldset>
+
+        </card-body>
+
+        @* Page Card: Footer *@
+        <card-footer>
+
+            <button class="btn btn-primary" type="submit">Save</button>
+
+        </card-footer>
+
+    </form>
+
+</card>

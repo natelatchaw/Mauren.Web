@@ -1,0 +1,35 @@
+﻿@{
+    Layout = null; // No parent layout
+}
+
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    
+    @* Meta Tags *@
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"]</title>
+    
+    @* Default Base Styles *@
+    <link rel="stylesheet" href="~/css/site.css" />
+    
+    @* Render Styles section *@
+    @await RenderSectionAsync("Styles", required: false)
+    
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    
+    @* Body: Content Container *@
+    <div class="d-flex flex-fill">
+        
+        @* Page Body *@
+        @RenderBody()
+        
+    </div>
+    
+    @* Render Scripts section *@
+    @await RenderSectionAsync("Scripts", required: false)
+    
+</body>
+</html>

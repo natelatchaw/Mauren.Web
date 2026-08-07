@@ -1,0 +1,36 @@
+@using Mauren.Discord.UI.Features
+
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    
+    @* Meta Tags *@
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    @* Page Title *@
+    <title>@ViewData["Title"]</title>
+    
+    @* Render Styles section *@
+    @await RenderSectionAsync("Styles", required: false)
+    
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    
+    @* Page Navigation Bar *@
+    <vc:navigation-bar data="@Navigation.Bar"></vc:navigation-bar>
+    
+    @* Body: Content Container *@
+    <div class="d-flex flex-fill">
+        
+        @* Page Body *@
+        @RenderBody()
+        
+    </div>
+    
+    @* Render Scripts section *@
+    @await RenderSectionAsync("Scripts", required: false)
+    
+</body>
+</html>

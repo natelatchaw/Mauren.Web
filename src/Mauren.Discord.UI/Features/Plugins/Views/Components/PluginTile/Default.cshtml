@@ -1,0 +1,57 @@
+@model Mauren.Discord.Application.Features.Plugins.PluginMetadataViewModel
+
+@* Plugin Container *@
+<div class="" style="width: 15rem;">
+
+    <card>
+        
+        <img class="card-img-top" src="@Model.Cover" style="aspect-ratio: 4/3; object-fit: cover;" draggable="false" />
+
+        <card-body>
+
+            <div class="hstack gap-2 justify-content-between">
+
+                @* Plugin Name *@
+                <p class="card-title text-truncate fs-5 m-0" title="@Model.Name">@Model.Name</p>
+                
+                @if (Model.Version is Version version)
+                {
+                    @* Plugin Version Badge *@
+                    <div class="badge text-bg-primary" title="Plugin v@(version)">
+
+                        <div class="d-inline-flex align-items-center gap-0">
+
+                            <p class="card-text m-0">v</p>
+
+                            <p class="card-text m-0">@version</p>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </card-body>
+
+        <card-footer>
+
+            <form asp-controller="Plugins" method="post">
+
+                @* Input Value: Plugin Id *@
+                <input type="hidden" name="pluginId" value="@Model.Id" />
+
+                <div class="hstack gap-2 justify-content-evenly">
+                    
+                    @* Remove Plugin Button *@
+                    <button class="btn btn-sm btn-danger w-100" asp-action="Remove" type="submit">Remove</button>
+
+                </div>
+
+            </form>
+
+        </card-footer>
+
+    </card>
+
+</div>

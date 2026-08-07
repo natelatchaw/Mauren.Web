@@ -1,0 +1,64 @@
+@model Mauren.Discord.Application.Features.Connection.GuildMetadataViewModel
+
+@{
+    Bootstrap.Interfaces.IHasIcon icon = new Mauren.Discord.UI.Features.Icon
+    {
+        IconName = "bi-people",
+    };
+}
+
+@* Guild Container *@
+<div class="" style="width: 15rem;">
+
+    <card class="text-center">
+
+        <img class="card-img-top" src="@Model.Cover" style="aspect-ratio: 4/3; object-fit: cover;" draggable="false" />
+
+        <card-body>
+
+            <div class="hstack gap-2 justify-content-between">
+                
+                @* Guild Name *@
+                <p class="card-title text-truncate fs-5 m-0" title="@Model.Name">@Model.Name</p>
+
+                @if (Model.MemberCount is Int32 memberCount)
+                {
+                    @* Member Count Badge *@
+                    <div class="badge text-bg-primary" title="@memberCount Members">
+
+                        <div class="d-inline-flex align-items-center gap-0">
+
+                            <i class="card-text" model="@icon"></i>
+
+                            <p class="card-text">@memberCount</p>
+
+                        </div>
+
+                    </div>
+                }
+
+            </div>
+
+        </card-body>
+
+        <card-footer>
+
+            <form asp-controller="Connection" method="post">
+
+                @* Input Value: Guild Id *@
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <div class="hstack gap-2 justify-content-evenly">
+
+                    @* Leave Guild Button *@
+                    <button class="btn btn-sm btn-danger w-100" asp-action="LeaveGuild" type="submit">Leave</button>
+
+                </div>
+
+            </form>
+
+        </card-footer>
+
+    </card>
+
+</div>

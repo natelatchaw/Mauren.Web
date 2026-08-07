@@ -1,0 +1,75 @@
+@using Bootstrap.Interfaces
+@using Mauren.Discord.UI
+@using Mauren.Discord.UI.Features
+@using Mauren.Discord.UI.Features.Configuration
+@model Mauren.Discord.UI.Features.Configuration.Models.StatusViewModel
+@{
+    this.SetNavigationLink(Manifest.Configuration.Status, out INavigationLink link);
+    INavigationLink start = new NavigationLink()
+    {
+        Identifier = "bot.start",
+        Controller = nameof(ConfigurationController),
+        Action = nameof(ConfigurationController.StartBot),
+        // Label = "Start",
+        IconName = "bi-play-fill",
+        Title = "Start"
+    };
+    INavigationLink stop = new NavigationLink()
+    {
+        Identifier = "bot.stop",
+        Controller = nameof(ConfigurationController),
+        Action = nameof(ConfigurationController.StopBot),
+        // Label = "Stop",
+        IconName = "bi-stop-fill",
+        Title = "Stop"
+    };
+}
+
+@* Page Info *@
+<vc:title-card title="@link.Label" subtitle="Manage Bot Configuration Status"></vc:title-card>
+
+@* Spacer *@
+<div class="mt-2"></div>
+
+@* Page Card *@
+<card>
+
+    @* Page Card: Header *@
+    <card-header>
+
+        <div class="hstack justify-content-between">
+
+            <h5 class="card-title m-0">@link.Label</h5>
+
+        </div>
+
+    </card-header>
+
+    @* Page Card: Body *@
+    <card-body>
+
+        <form asp-controller="Configuration" method="post">
+
+            <div class="input-group">
+                
+                <span class="input-group-text">@(Model.IsRunning ? "Running" : "Stopped")</span>
+                
+                <button class="btn btn-success" asp-action="StartBot" model="@start" disabled="@(Model.IsRunning is true)">
+
+                    <vc:label model="@start"></vc:label>
+                    
+                </button>
+
+                <button class="btn btn-danger" asp-action="StopBot" model="@stop" disabled="@(Model.IsRunning is false)">
+                    
+                    <vc:label model="@stop"></vc:label>
+                    
+                </button>
+
+            </div>
+
+        </form>
+
+    </card-body>
+
+</card>

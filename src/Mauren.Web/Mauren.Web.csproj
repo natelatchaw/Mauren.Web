@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <UserSecretsId>67af399a-4c1c-4a43-bdd9-237528ad4dd5</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerDevelopmentMode>Regular</DockerDevelopmentMode>
+    <CopyStaticWebAssetsToOutput>true</CopyStaticWebAssetsToOutput>
+    
+    <!-- Force VS to build the full Dockerfile and execute the Entrypoint -->
+    <ContainerDevelopmentMode>Regular</ContainerDevelopmentMode>
+    <!-- Elevate the Docker build context to the repository root -->
+    <DockerfileContext>..\..\</DockerfileContext>
+    <DockerfileBuildArguments>--build-arg GITHUB_USERNAME=$(GITHUB_USERNAME) --build-arg GITHUB_PASSWORD=$(GITHUB_PASSWORD)</DockerfileBuildArguments>
+    
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mauren.Extensions.Plugins" Version="0.1.4" />
+    <PackageReference Include="Mauren.Extensions.Plugins.Hosting" Version="0.1.4" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mauren.Discord.Infrastructure\Mauren.Discord.Infrastructure.csproj" />
+    <ProjectReference Include="..\Mauren.Discord.UI\Mauren.Discord.UI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="entrypoint.sh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Lib\x64\libopus.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>opus.dll</Link>
+    </None>
+    <None Update="Lib\x64\libsodium.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>libsodium.dll</Link>
+    </None>
+    <None Update="Lib\x64\libdave.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Link>libdave.dll</Link>
+    </None>
+  </ItemGroup>
+
+</Project>

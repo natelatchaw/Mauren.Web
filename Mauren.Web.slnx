@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".github/workflows/docker-image.yml" />
+    <File Path="entrypoint.sh" />
+    <File Path="NuGet.Config" />
+  </Folder>
+  <Project Path="src/Mauren.Discord.Application/Mauren.Discord.Application.csproj" />
+  <Project Path="src/Mauren.Discord.Core/Mauren.Discord.Core.csproj" />
+  <Project Path="src/Mauren.Discord.Infrastructure/Mauren.Discord.Infrastructure.csproj" />
+  <Project Path="src/Mauren.Discord.UI/Mauren.Discord.UI.csproj" Id="f8a5cff6-7a43-48e8-8f0b-19f9bcea5352" />
+  <Project Path="src/Mauren.Web/Mauren.Web.csproj" />
+</Solution>

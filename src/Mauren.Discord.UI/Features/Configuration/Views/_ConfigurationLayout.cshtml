@@ -1,0 +1,41 @@
+@using Mauren.Discord.UI.Features.Configuration
+
+@{
+    Layout = "_Layout";
+}
+
+@section Styles {
+    @* Forward the Styles section *@
+    @await RenderSectionAsync("Styles", required: false)
+
+    @* Include Bootstrap styles *@
+    <partial name="_BootstrapStyles" />
+}
+
+@* Split Pane Container *@
+<div class="d-flex flex-column flex-lg-row flex-fill bg-body-tertiary">
+    
+    @* Side Navigation Menu *@
+    <vc:navigation-menu data="@Navigation.Menu"></vc:navigation-menu>
+    
+    @* Divider *@
+    <div class="border-end d-none d-lg-block"></div>
+    
+    @* Main Content Pane *@
+    <main class="flex-grow-1 p-3 overflow-auto">
+
+        @* Main Content Pane: Body *@
+        @RenderBody()
+        
+    </main>
+    
+</div>
+
+@section Scripts {
+    @* Forward the Scripts section *@
+    @await RenderSectionAsync("Scripts", required: false)
+
+    @* Include Bootstrap scripts *@
+    <partial name="_BootstrapScripts" />
+}
+
