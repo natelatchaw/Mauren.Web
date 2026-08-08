@@ -17,7 +17,9 @@ RUN curl -L -o /tmp/libdave.zip https://github.com/discord/libdave/releases/down
     && unzip /tmp/libdave.zip -d /tmp/extracted \
     && find /tmp/extracted -name "libdave.so*" -exec cp {} /tmp/dave/libdave.so \;
     
-RUN curl -L -o /tmp/yt-dlp https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
+RUN curl -L -o /tmp/yt-dlp_linux.zip https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux.zip \
+    && mkdir -p /tmp/yt-dlp \
+    && unzip /tmp/yt-dlp_linux.zip -d /tmp/yt-dlp
 
 # -----------------------------------------------------------------------------
 # 2. Base Stage (Used by Visual Studio Fast Mode)
@@ -37,9 +39,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=downloader /tmp/ffmpeg/ffmpeg /usr/local/bin/ffmpeg
 COPY --from=downloader /tmp/ffmpeg/ffprobe /usr/local/bin/ffprobe
 COPY --from=downloader /tmp/dave/libdave.so /usr/local/lib/libdave.so
-COPY --from=downloader /tmp/yt-dlp /usr/local/bin/yt-dlp
+COPY --from=downloader /tmp/yt-dlp /opt/yt-dlp
 
-RUN chmod +x /usr/local/bin/ffmpeg /usr/local/bin/ffprobe /usr/local/bin/yt-dlp \
+RUN chmod +x /usr/local/bin/ffmpeg /usr/local/bin/ffprobe /opt/yt-dlp/yt-dlp_linux \
+    && ln -s /opt/yt-dlp/yt-dlp_linux /usr/local/bin/yt-dlp \
     && ldconfig
 
 # Switch back to the unprivileged user so Visual Studio attaches its debugger cleanly
