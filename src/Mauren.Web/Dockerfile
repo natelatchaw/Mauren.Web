@@ -16,6 +16,8 @@ RUN curl -L -o /tmp/libdave.zip https://github.com/discord/libdave/releases/down
     && mkdir -p /tmp/extracted /tmp/dave \
     && unzip /tmp/libdave.zip -d /tmp/extracted \
     && find /tmp/extracted -name "libdave.so*" -exec cp {} /tmp/dave/libdave.so \;
+    
+RUN curl -L -o /tmp/yt-dlp https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp
 
 # -----------------------------------------------------------------------------
 # 2. Base Stage (Used by Visual Studio Fast Mode)
@@ -35,8 +37,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=downloader /tmp/ffmpeg/ffmpeg /usr/local/bin/ffmpeg
 COPY --from=downloader /tmp/ffmpeg/ffprobe /usr/local/bin/ffprobe
 COPY --from=downloader /tmp/dave/libdave.so /usr/local/lib/libdave.so
+COPY --from=downloader /tmp/yt-dlp /usr/local/bin/yt-dlp
 
-RUN chmod +x /usr/local/bin/ffmpeg /usr/local/bin/ffprobe \
+RUN chmod +x /usr/local/bin/ffmpeg /usr/local/bin/ffprobe /usr/local/bin/yt-dlp \
     && ldconfig
 
 # Switch back to the unprivileged user so Visual Studio attaches its debugger cleanly
@@ -97,5 +100,5 @@ RUN mkdir -p Content \
     && cp Content/appsettings*.json /app/ 2>/dev/null || true \
     && chown -R $APP_UID:$APP_UID /app /entrypoint.sh
 
-# Container remains root to allow entrypoint.sh to map Unraid volumes before gosu hand-off
+# Container remains root to allow entrypoint.sh to map Unraid volumes before hand-off
 ENTRYPOINT ["/entrypoint.sh"]
