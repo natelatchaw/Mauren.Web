@@ -33,7 +33,9 @@ EXPOSE 8081
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libopus0 \
+    libopus-dev \
     libsodium23 \
+    libsodium-dev \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=downloader /tmp/ffmpeg/ffmpeg /usr/local/bin/ffmpeg
