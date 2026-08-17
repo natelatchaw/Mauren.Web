@@ -3,6 +3,7 @@ using Mauren.Discord.Application.Abstractions.Messaging;
 using Mauren.Discord.Application.Abstractions.Validation;
 using Mauren.Discord.Application.Features.Plugins;
 using Mauren.Discord.Core;
+using Mauren.Discord.UI.Features.Configuration.Models;
 using Mauren.Discord.UI.Features.Plugins.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -27,6 +28,69 @@ namespace Mauren.Discord.UI.Features.Plugins
         public async Task<IActionResult> Index()
         {
             return RedirectToAction(nameof(Installed));
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Location(CancellationToken cancellationToken)
+        {
+            try
+            {
+                // Create a new query to get the plugin directory
+                GetLocationQuery query = new();
+
+                // Dispatch the query to the pipeline
+                Result<LocationInformation?> result = await _dispatcher.DispatchAsync<GetLocationQuery, LocationInformation?>(query, cancellationToken);
+
+                result.TryGetValue(out LocationInformation? locationInformation);
+
+                // Return the view
+                return View(model: new LocationViewModel
+                {
+                    CurrentPath = locationInformation?.Value switch
+                    {
+                        String value => value,
+                        _ => null,
+                    },
+                    NewPath = default,
+                    LastUpdated = null,
+                });
+            }
+            catch (ValidationException exception)
+            {
+                foreach (ValidationError error in exception.Errors)
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+
+                return View(model: new LocationViewModel
+                {
+
+                });
+            }
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Location([FromForm] String newPath, CancellationToken cancellationToken)
+        {
+            try
+            {
+                // Create a new command to update the plugin directory location
+                UpdateLocationCommand command = new(newPath);
+
+                // Dispatch the command to the pipeline
+                await _dispatcher.DispatchAsync<UpdateLocationCommand>(command, cancellationToken);
+
+                TempData["Success"] = "Location updated successfully.";
+                return RedirectToAction(nameof(Location));
+            }
+            catch (ValidationException exception)
+            {
+                foreach (ValidationError error in exception.Errors)
+                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+
+                return View(model: new LocationViewModel
+                {
+
+                });
+            }
         }
 
         [HttpGet("[action]")]

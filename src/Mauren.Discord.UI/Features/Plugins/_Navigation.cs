@@ -15,6 +15,7 @@ namespace Mauren.Discord.UI.Features.Plugins
                     Header = null,
                     Links = new List<NavigationLink>
                     {
+                        Manifest.Plugins.Location,
                         Manifest.Plugins.Installed,
                         Manifest.Plugins.Upload,
                         Manifest.Plugins.Commands,

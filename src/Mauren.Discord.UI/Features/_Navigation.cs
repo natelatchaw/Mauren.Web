@@ -42,6 +42,7 @@ namespace Mauren.Discord.UI.Features
                     Manifest.Plugins.Header,
                     new List<INavigationLink>
                     {
+                        Manifest.Plugins.Location,
                         Manifest.Plugins.Installed,
                         Manifest.Plugins.Upload,
                         Manifest.Plugins.Commands,

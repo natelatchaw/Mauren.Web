@@ -101,6 +101,18 @@ namespace Mauren.Discord.UI
                 Title = "Plugin Manager",
             };
 
+            public static NavigationLink Location => new()
+            {
+                Identifier = "bot.plugins.location",
+                Label = "Plugin Directory",
+                Controller = "Plugins",
+                Action = "Location",
+                IconName = "bi-folder",
+                Title = "Plugin Directory Location",
+                ButtonColor = Bootstrap.ButtonColor.Primary,
+                ButtonStyle = Bootstrap.ButtonStyle.Normal,
+            };
+
             public static NavigationLink Installed => new()
             {
                 Identifier = "bot.plugins.installed",

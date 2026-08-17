@@ -8,15 +8,23 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates curl xz-utils unzip \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -L -o /tmp/ffmpeg.tar.xz https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz \
+RUN curl -L -o /tmp/deno.zip https://github.com/denoland/deno/releases/latest/download/deno-x86_64-unknown-linux-gnu.zip \
+    && mkdir -p /tmp/deno \
+    && unzip /tmp/deno.zip -d /tmp/deno
+
+RUN curl -L -o /tmp/ffmpeg.tar.xz https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz \
     && mkdir -p /tmp/ffmpeg \
-    && tar -xJf /tmp/ffmpeg.tar.xz -C /tmp/ffmpeg --strip-components=1
+    && tar -xJf /tmp/ffmpeg.tar.xz -C /tmp/ffmpeg --strip-components=1 \
+    # BtbN packages the binaries inside a "bin" folder, so we move them out
+    && mv /tmp/ffmpeg/bin/* /tmp/ffmpeg/
 
 RUN curl -L -o /tmp/libdave.zip https://github.com/discord/libdave/releases/download/v1.1.1%2Fcpp/libdave-Linux-X64-boringssl.zip \
     && mkdir -p /tmp/extracted /tmp/dave \
     && unzip /tmp/libdave.zip -d /tmp/extracted \
     && find /tmp/extracted -name "libdave.so*" -exec cp {} /tmp/dave/libdave.so \;
     
+# Bust the cache if the yt-dlp release JSON changes
+ADD "https://api.github.com/repos/yt-dlp/yt-dlp/releases/latest" /tmp/ytdlp.json
 RUN curl -L -o /tmp/yt-dlp_linux.zip https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux.zip \
     && mkdir -p /tmp/yt-dlp \
     && unzip /tmp/yt-dlp_linux.zip -d /tmp/yt-dlp
@@ -32,18 +40,20 @@ EXPOSE 8081
 # Temporarily switch to root to install dependencies needed for BOTH debugging and production
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
     libopus0 \
     libopus-dev \
     libsodium23 \
     libsodium-dev \
     && rm -rf /var/lib/apt/lists/*
 
+COPY --from=downloader /tmp/deno/deno /usr/local/bin/deno
 COPY --from=downloader /tmp/ffmpeg/ffmpeg /usr/local/bin/ffmpeg
 COPY --from=downloader /tmp/ffmpeg/ffprobe /usr/local/bin/ffprobe
 COPY --from=downloader /tmp/dave/libdave.so /usr/local/lib/libdave.so
 COPY --from=downloader /tmp/yt-dlp /opt/yt-dlp
 
-RUN chmod +x /usr/local/bin/ffmpeg /usr/local/bin/ffprobe /opt/yt-dlp/yt-dlp_linux \
+RUN chmod +x /usr/local/bin/deno /usr/local/bin/ffmpeg /usr/local/bin/ffprobe /opt/yt-dlp/yt-dlp_linux \
     && ln -s /opt/yt-dlp/yt-dlp_linux /usr/local/bin/yt-dlp \
     && ldconfig
 

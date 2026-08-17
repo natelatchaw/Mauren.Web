@@ -41,7 +41,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 // Configure the Discord Socket
                 DiscordSocketConfig = new Discord.WebSocket.DiscordSocketConfig
                 {
-
+                    EnableVoiceDaveEncryption = true,
                 },
                 // Configure the Command Service
                 CommandServiceConfig = new Discord.Commands.CommandServiceConfig

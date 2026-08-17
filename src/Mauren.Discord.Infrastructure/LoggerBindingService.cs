@@ -2,6 +2,7 @@
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.LibDave;
+using Discord.LibDave.Binding;
 using Discord.WebSocket;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -20,6 +21,7 @@ namespace Mauren.Discord.Infrastructure
         private readonly ILogger _clientLogger;
         private readonly ILogger _commandLogger;
         private readonly ILogger _interactionsLogger;
+        private readonly ILogger _daveLogger;
 
         private readonly TaskCompletionSource<Object> _taskCompletionSource;
 
@@ -37,7 +39,22 @@ namespace Mauren.Discord.Infrastructure
 
             _taskCompletionSource = new();
 
-            Dave.SetLogSink((_, _, _, _) => { });
+            _daveLogger = loggerFactory.CreateLogger(typeof(Dave).FullName ?? "DAVE");
+            Dave.SetLogSink((LoggingSeverity severity, String file, Int32 line, String message) =>
+            {
+                LogLevel loglevel = severity switch
+                {
+                    LoggingSeverity.Error => LogLevel.Error,
+                    LoggingSeverity.Warning => LogLevel.Warning,
+                    LoggingSeverity.Info => LogLevel.Information,
+                    LoggingSeverity.Verbose => LogLevel.Trace,
+                    LoggingSeverity.None => LogLevel.None,
+
+                    _ => LogLevel.None,
+                };
+
+                _daveLogger.Log(loglevel, "{message}", message);
+            });
         }
 
         /// <inheritdoc/>
