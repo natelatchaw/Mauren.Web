@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Mauren.Web
@@ -23,6 +25,10 @@ namespace Mauren.Web
 
             // Configure the application's services
             builder.Services.ConfigureServices(builder.Configuration);
+
+            // Add the content directory
+            builder.Services.AddContentFileProvider(builder.Environment);
+
             // Build the application host
             using WebApplication host = builder.Build();
 
@@ -117,6 +123,16 @@ namespace Mauren.Web
                 // Map controllers
                 builder.MapControllers();
             });
+        }
+    }
+
+    public static class IFileProviderExtensions
+    {
+        public static IServiceCollection AddContentFileProvider(this IServiceCollection services, IHostEnvironment environment, String subpath = "Content")
+        {
+            String contentPath = Path.Combine(environment.ContentRootPath, subpath);
+            services.AddSingleton<IFileProvider>(new PhysicalFileProvider(contentPath));
+            return services;
         }
     }
 }
