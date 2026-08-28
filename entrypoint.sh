@@ -145,6 +145,11 @@ if [ "$(id -u)" = "0" ]; then
     
     # Apply permissions ONLY to the Unraid mounted folder. Leave the root files alone.
     chown -R $USER_ID /app/Content
+
+    # Redirect XDG cache to /opt/.cache
+    mkdir -p /opt/.cache
+    chown -R $USER_ID /opt/.cache
+    export XDG_CACHE_HOME="/opt/.cache"
     
     # Hand off to the app using setpriv to drop privileges
     exec setpriv --reuid=$USER_ID --regid=$USER_ID --clear-groups dotnet Mauren.Web.dll
