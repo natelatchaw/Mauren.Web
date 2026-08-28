@@ -28,7 +28,7 @@
       },
       "publishAllPorts": true,
       "useSSL": true,
-      "containerRunArguments": "--mount type=bind,source=C:\\\\Users\\\\natel\\\\Downloads\\\\Content,target=/app/Content"
+      "containerRunArguments": "--mount type=bind,source=C:\\Users\\natel\\Downloads\\Content,target=/app/Content --mount type=bind,source=C:\\Users\\natel\\Downloads\\yt-dlp-local,target=/opt/yt-dlp"
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json"

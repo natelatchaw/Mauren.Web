@@ -1,30 +1,7 @@
 # See https://aka.ms/customizecontainer to learn how to customize your debug container 
 
 # -----------------------------------------------------------------------------
-# 1. Downloader Helper Stage
-# -----------------------------------------------------------------------------
-FROM debian:bookworm-slim AS downloader
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates curl xz-utils unzip \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN curl -L -o /tmp/deno.zip https://github.com/denoland/deno/releases/latest/download/deno-x86_64-unknown-linux-gnu.zip \
-    && mkdir -p /tmp/deno \
-    && unzip /tmp/deno.zip -d /tmp/deno
-
-RUN curl -L -o /tmp/ffmpeg.tar.xz https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz \
-    && mkdir -p /tmp/ffmpeg \
-    && tar -xJf /tmp/ffmpeg.tar.xz -C /tmp/ffmpeg --strip-components=1 \
-    # BtbN packages the binaries inside a "bin" folder, so we move them out
-    && mv /tmp/ffmpeg/bin/* /tmp/ffmpeg/
-
-RUN curl -L -o /tmp/libdave.zip https://github.com/discord/libdave/releases/download/v1.1.1%2Fcpp/libdave-Linux-X64-boringssl.zip \
-    && mkdir -p /tmp/extracted /tmp/dave \
-    && unzip /tmp/libdave.zip -d /tmp/extracted \
-    && find /tmp/extracted -name "libdave.so*" -exec cp {} /tmp/dave/libdave.so \;
-
-# -----------------------------------------------------------------------------
-# 2. Base Stage (Used by Visual Studio Fast Mode)
+# Base Stage
 # -----------------------------------------------------------------------------
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
@@ -35,25 +12,20 @@ EXPOSE 8081
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
+    curl \
+    unzip \
+    xz-utils \
     libopus0 \
     libopus-dev \
     libsodium23 \
     libsodium-dev \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=downloader /tmp/deno/deno /usr/local/bin/deno
-COPY --from=downloader /tmp/ffmpeg/ffmpeg /usr/local/bin/ffmpeg
-COPY --from=downloader /tmp/ffmpeg/ffprobe /usr/local/bin/ffprobe
-COPY --from=downloader /tmp/dave/libdave.so /usr/local/lib/libdave.so
-
-RUN chmod +x /usr/local/bin/deno /usr/local/bin/ffmpeg /usr/local/bin/ffprobe \
-    && ldconfig
-
 # Switch back to the unprivileged user so Visual Studio attaches its debugger cleanly
 USER $APP_UID
 	
 # -----------------------------------------------------------------------------
-# 3. Build Stage
+# Build Stage
 # -----------------------------------------------------------------------------
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
@@ -82,14 +54,14 @@ COPY ["src/", "src/"]
 RUN dotnet build "./src/Mauren.Web/Mauren.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # -----------------------------------------------------------------------------
-# 4. Publish Stage
+# Publish Stage
 # -----------------------------------------------------------------------------
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./src/Mauren.Web/Mauren.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # -----------------------------------------------------------------------------
-# 5. Final Stage (Used by Unraid / Production)
+# Final Stage
 # -----------------------------------------------------------------------------
 FROM base AS final
 WORKDIR /app
