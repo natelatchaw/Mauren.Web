@@ -22,12 +22,6 @@ RUN curl -L -o /tmp/libdave.zip https://github.com/discord/libdave/releases/down
     && mkdir -p /tmp/extracted /tmp/dave \
     && unzip /tmp/libdave.zip -d /tmp/extracted \
     && find /tmp/extracted -name "libdave.so*" -exec cp {} /tmp/dave/libdave.so \;
-    
-# Bust the cache if the yt-dlp release JSON changes
-ADD "https://api.github.com/repos/yt-dlp/yt-dlp/releases/latest" /tmp/ytdlp.json
-RUN curl -L -o /tmp/yt-dlp_linux.zip https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux.zip \
-    && mkdir -p /tmp/yt-dlp \
-    && unzip /tmp/yt-dlp_linux.zip -d /tmp/yt-dlp
 
 # -----------------------------------------------------------------------------
 # 2. Base Stage (Used by Visual Studio Fast Mode)
@@ -51,10 +45,8 @@ COPY --from=downloader /tmp/deno/deno /usr/local/bin/deno
 COPY --from=downloader /tmp/ffmpeg/ffmpeg /usr/local/bin/ffmpeg
 COPY --from=downloader /tmp/ffmpeg/ffprobe /usr/local/bin/ffprobe
 COPY --from=downloader /tmp/dave/libdave.so /usr/local/lib/libdave.so
-COPY --from=downloader /tmp/yt-dlp /opt/yt-dlp
 
-RUN chmod +x /usr/local/bin/deno /usr/local/bin/ffmpeg /usr/local/bin/ffprobe /opt/yt-dlp/yt-dlp_linux \
-    && ln -s /opt/yt-dlp/yt-dlp_linux /usr/local/bin/yt-dlp \
+RUN chmod +x /usr/local/bin/deno /usr/local/bin/ffmpeg /usr/local/bin/ffprobe \
     && ldconfig
 
 # Switch back to the unprivileged user so Visual Studio attaches its debugger cleanly
